@@ -17,4 +17,6 @@ sudo apt-get install ros-indigo-turtlebot-*
 
 ## resources
 
+[turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
+
 [learn turtle bot](http://learn.turtlebot.com/2015/02/03/3/)
