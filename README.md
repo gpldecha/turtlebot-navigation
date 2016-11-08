@@ -20,10 +20,12 @@ roslaunch turtlebot_gazebo turtlebot_world.launch
 ```
 
 If all goes well you should see the following:
-
+<center>
 <img src="docs/gazebo_screen_shot.png" width="400"/> 
+</center>
 
-
+If Gazebo loads up and the screen is black (it was the case for me) follow the fix instructions on this 
+page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/gazebo2-with-black-screen/).
 
 
 ## resources
