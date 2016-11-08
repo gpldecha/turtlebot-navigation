@@ -28,7 +28,12 @@ If Gazebo loads up and the screen is black (it was the case for me) follow the f
 page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/gazebo2-with-black-screen/).
 
 
+## 
+
+
 ## resources
+
+[turtle bot rviz](http://wiki.ros.org/turtlebot/Tutorials/indigo/3D%20Visualisation)
 
 [turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
 
