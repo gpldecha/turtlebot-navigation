@@ -33,7 +33,7 @@ page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/ga
 
 ## resources
 
-[turtle bot rviz](http://wiki.ros.org/turtlebot/Tutorials/indigo/3D%20Visualisation)
+[turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
 
 [turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
 
