@@ -46,17 +46,13 @@ collaboratively with another.
 We will be using the ros [navigation stack](http://wiki.ros.osuosl.org/navigation). The following concepts
 will be important
 
-* Global map
-* Local cost map
-* Global planner
-* Local planner
-
 
 * **global map**: is computed with SLAM and then stored as an occupancy grid map.
 
 * [**local costmap**](http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)(see section 2. The Costmap)
 is used by a local navigation planner ensures that obstacles are avoided. The global path is projected onto the local costmap and is addapted according to the local surounding. See [base_local_planner](http://wiki.ros.org/base_local_planner?distro=kinetic) for an example of a local planner
 
+* **global planners**: see [carrot_planne](http://wiki.ros.org/carrot_planner?distro=indigo) for an example.
 
 
 ## notes
