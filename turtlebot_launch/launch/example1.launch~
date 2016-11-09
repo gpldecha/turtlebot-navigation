@@ -2,21 +2,22 @@
 <launch>
 
 	<!-- arg -->
-	<arg name="world"	default="/opt/ros/indigo/share/turtlebot_gazebo/worlds/playground.world"/>
+	<arg name="world"		default="playground"/>
+	<arg name="rviz_config_file"	default="robot"/>
 
 
 	<!-- gazebo turtlebot simulation launched -->
 
 	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
-	  	<arg name="world_file" 			value="$(arg world)"/>
+	  	<arg name="world_file" 			value="$(find turtlebot_gz)/worlds/$(arg world).world"/>
 	</include> 
 
-
-	<!-- Rvis 
 	
-	<include file="$(find ros-gazebo-navigation-example)/launch/launch/view_robot.launch">
-		
-	</include>-->
+	<!-- Rviz launch -->
+
+	<include file="$(find turtlebot_launch)/launch/rviz_launch/view_robot.launch">
+	  	<arg name="rviz_config_file" 		value="$(arg rviz_config_file)"/>
+	</include> 
 
 </launch>
 
