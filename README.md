@@ -72,7 +72,8 @@ There are two maps which are used during the execution of a plan
 
 * [Setup the Navigation Stack for TurtleBot](http://wiki.ros.osuosl.org/turtlebot_navigation/Tutorials/indigo/Setup%20the%20Navigation%20Stack%20for%20TurtleBot)
 
-* [turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
+* [Make a map and navigate with it
+](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Make%20a%20map%20and%20navigate%20with%20it)
 
 * [turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
 
