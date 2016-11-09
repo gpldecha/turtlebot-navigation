@@ -70,7 +70,7 @@ There are two maps which are used during the execution of a plan
 
 ### turtle bot
 
-* [turtle bot navigation tutorial](http://wiki.ros.osuosl.org/turtlebot_navigation/Tutorials/indigo/Setup%20the%20Navigation%20Stack%20for%20TurtleBot)
+* [Setup the Navigation Stack for TurtleBot](http://wiki.ros.osuosl.org/turtlebot_navigation/Tutorials/indigo/Setup%20the%20Navigation%20Stack%20for%20TurtleBot)
 
 * [turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
 
