@@ -33,8 +33,15 @@ page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/ga
 
 ## resources
 
+### turtle bot
+
 [turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
 
 [turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
 
 [learn turtle bot](http://learn.turtlebot.com/2015/02/03/3/)
+
+### Drones in Gazebo
+
+[gazebo drones](http://gazebosim.org/blog?page=2)
+
