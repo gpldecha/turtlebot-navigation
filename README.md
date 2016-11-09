@@ -28,18 +28,18 @@ If Gazebo loads up and the screen is black (it was the case for me) follow the f
 page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/gazebo2-with-black-screen/).
 
 
-## 
-
 
 ## resources
 
 ### turtle bot
 
-[turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
+* [turtle bot navigation tutorial](http://wiki.ros.osuosl.org/action/fullsearch/turtlebot_navigation/Tutorials?action=fullsearch&context=180&value=linkto%3A%22turtlebot_navigation%2FTutorials%22)
 
-[turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
+* [turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
 
-[learn turtle bot](http://learn.turtlebot.com/2015/02/03/3/)
+* [turtlebot_simulator](https://github.com/turtlebot/turtlebot_simulator)
+
+* [learn turtle bot](http://learn.turtlebot.com/2015/02/03/3/)
 
 ### Drones in Gazebo
 
