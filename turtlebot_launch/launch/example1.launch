@@ -6,9 +6,11 @@
 
 
 	<!-- gazebo turtlebot simulation launched -->
+
 	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
 	  	<arg name="world_file" 			value="$(arg world)"/>
 	</include> 
+
 
 
 </launch>

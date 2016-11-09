@@ -6,10 +6,17 @@
 
 
 	<!-- gazebo turtlebot simulation launched -->
+
 	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
-	  	<arg name="use_rviz" 			value="$(arg world)"/>
+	  	<arg name="world_file" 			value="$(arg world)"/>
 	</include> 
 
+
+	<!-- Rvis 
+	
+	<include file="$(find ros-gazebo-navigation-example)/launch/launch/view_robot.launch">
+		
+	</include>-->
 
 </launch>
 
