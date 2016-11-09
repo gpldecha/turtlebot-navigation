@@ -1,7 +1,9 @@
 # ros-gazebo-example
 A navigation example using turtle bot to sweeping through an environmnet
 
-# Instaling turtlebot
+# Installation 
+
+## dependencies
 
 We will be using the turtle bot as our working example robot. First you will have to install the ros packages 
 for the turtle bot. These packages depend on gazebo2 which is the default provided when you install indigo-full-desktop.
@@ -27,9 +29,30 @@ If all goes well you should see the following:
 If Gazebo loads up and the screen is black (it was the case for me) follow the fix instructions on this 
 page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/gazebo2-with-black-screen/).
 
+## this package
+
+In your catking_workspace/src
+
+```bash
+git clone https://github.com/gpldecha/turtlebot-navigation.git 
+```
+# Goal
+
+This goal is to be able to sweep the square environment first with one robot and then 
+collaboratively with another.
+
+# Approach
+
+We will be using the ros [navigation stack](http://wiki.ros.osuosl.org/navigation).
+
+## notes
+
+There are two maps which are used during the execution of a plan
+
+* 
 
 
-## resources
+# resources
 
 ### turtle bot
 
