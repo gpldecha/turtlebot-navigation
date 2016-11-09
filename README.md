@@ -33,7 +33,7 @@ page: [gazebo2-with-black-screen](http://answers.gazebosim.org/question/12773/ga
 
 ### turtle bot
 
-* [turtle bot navigation tutorial](http://wiki.ros.osuosl.org/action/fullsearch/turtlebot_navigation/Tutorials?action=fullsearch&context=180&value=linkto%3A%22turtlebot_navigation%2FTutorials%22)
+* [turtle bot navigation tutorial](http://wiki.ros.osuosl.org/turtlebot_navigation/Tutorials/indigo/Setup%20the%20Navigation%20Stack%20for%20TurtleBot)
 
 * [turtle bot rviz](http://wiki.ros.org/turtlebot_simulator/Tutorials/hydro/Explore%20the%20Gazebo%20world)
 
