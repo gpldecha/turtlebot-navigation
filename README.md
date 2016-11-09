@@ -45,6 +45,12 @@ collaboratively with another.
 
 We will be using the ros [navigation stack](http://wiki.ros.osuosl.org/navigation).
 
+
+* **global map**: is computed with SLAM and then stored as an occupancy grid map.
+
+* [**local costmap**](http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+
+
 ## notes
 
 There are two maps which are used during the execution of a plan
