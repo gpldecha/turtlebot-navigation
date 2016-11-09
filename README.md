@@ -54,6 +54,10 @@ is used by a local navigation planner ensures that obstacles are avoided. The gl
 
 * **global planners**: see [carrot_planne](http://wiki.ros.org/carrot_planner?distro=indigo) for an example.
 
+As our goal is to sweep the entire state space we will write our own custom global planner which will compute 
+a path which convers the entire map.
+
+* [Writing A Global Path Planner As Plugin in ROS](http://wiki.ros.org/action/fullsearch/navigation/Tutorials/Writing%20A%20Global%20Path%20Planner%20As%20Plugin%20in%20ROS?action=fullsearch&context=180&value=linkto%3A%22navigation%2FTutorials%2FWriting+A+Global+Path+Planner+As+Plugin+in+ROS%22)
 
 ## notes
 
