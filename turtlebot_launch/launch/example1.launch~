@@ -2,20 +2,28 @@
 <launch>
 
 	<!-- arg -->
-	<arg name="world"		default="playground"/>
+	<arg name="world"		default="playground_v2"/>
 	<arg name="rviz_config_file"	default="robot"/>
+	<arg name="map_file" 		default="playground_v2"/>
 
 
 	<!-- gazebo turtlebot simulation launched -->
 
-	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
+	<include file="$(find turtlebot_gz)/launch/turtlebot_world.launch">
 	  	<arg name="world_file" 			value="$(find turtlebot_gz)/worlds/$(arg world).world"/>
 	</include> 
 
 	
-	<!-- Rviz launch -->
+	<!-- map server -->
 
-	<include file="$(find turtlebot_launch)/launch/rviz_launch/view_robot.launch">
+	<include file="$(find turtlebot_gz)/launch/amcl_demo.launch">
+		<arg name="map_file" 			value="$(find turtlebot_gz)/maps/$(arg map_file).yaml"/>
+	</include> 
+	
+
+	<!-- rviz launch -->
+
+	<include file="$(find turtlebot_launch)/launch/rviz_launch/view_teleop_navigation.launch">
 	  	<arg name="rviz_config_file" 		value="$(arg rviz_config_file)"/>
 	</include> 
 

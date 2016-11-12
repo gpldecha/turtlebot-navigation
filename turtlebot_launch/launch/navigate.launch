@@ -4,7 +4,6 @@
 	<!-- arg -->
 	<arg name="world"		default="playground_v2"/>
 	<arg name="rviz_config_file"	default="robot"/>
-	<arg name="map_file" 		default="playground_v2"/>
 
 
 	<!-- gazebo turtlebot simulation launched -->
@@ -14,17 +13,11 @@
 	</include> 
 
 	
-	<!-- map server -->
+	<!-- Rviz launch -->
 
-	<include file="$(find turtlebot_gz)/launch/amcl_demo.launch">
-		<arg name="map_file" 			value="$(find turtlebot_gz)/maps/$(arg map_file).yaml"/>
+	<include file="$(find turtlebot_launch)/launch/rviz_launch/view_robot.launch">
+	  	<arg name="rviz_config_file" 		value="$(arg rviz_config_file)"/>
 	</include> 
-	
-
-	<!-- rviz launch -->
-
-	<include file="$(find turtlebot_launch)/launch/rviz_launch/view_teleop_navigation.launch"/>
-
 
 </launch>
 
