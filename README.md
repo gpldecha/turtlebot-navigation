@@ -59,6 +59,11 @@ a path which convers the entire map.
 
 * [Writing A Global Path Planner As Plugin in ROS](http://wiki.ros.org/action/fullsearch/navigation/Tutorials/Writing%20A%20Global%20Path%20Planner%20As%20Plugin%20in%20ROS?action=fullsearch&context=180&value=linkto%3A%22navigation%2FTutorials%2FWriting+A+Global+Path+Planner+As+Plugin+in+ROS%22)
 
+## Turtle bot control tunning
+
+When I first ran the default behaviour the robot would often perfrom complete 360 degree rotations. The local behaviour
+of the robot is dictated by the local planner which in our case is [**base_local_planner**](http://wiki.ros.org/base_local_planner).
+
 ## notes
 
 There are two maps which are used during the execution of a plan
