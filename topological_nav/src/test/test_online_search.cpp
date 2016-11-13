@@ -37,14 +37,6 @@ int main(int argc, char** argv)
 
     std::cout<< " One line search initialised " << std::endl;
     arma::rowvec2 agent_pos;
-    online_search.update_state(agent_pos,grid);
-
-    online_search.print();
-
-    online_search.get_action(1);
-
-    online_search.print();
-
 
     return 0;
 }

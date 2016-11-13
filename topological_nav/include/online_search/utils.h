@@ -89,10 +89,10 @@ inline std::size_t forward_dynamics(state s, action a, const arma::Mat<int>& Adj
  * @param max_speed         : maximum speed
  * @param period            : loop cycle period dt
  */
-inline void get_velocity(arma::colvec3& velocity, const arma::colvec3& position,const arma::colvec3& target, double max_speed, const ros::Duration& period)
+inline void get_velocity(arma::colvec3& velocity, const arma::colvec3& position,const arma::colvec3& target, double max_speed, const double period)
 {
 
-    velocity = (target - position) / period.toSec();
+    velocity = (target - position) * period;
     if(arma::norm(velocity) > max_speed)
     {
         velocity = velocity / arma::norm(velocity) * max_speed;

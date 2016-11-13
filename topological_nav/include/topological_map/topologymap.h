@@ -2,6 +2,7 @@
 #define TOPOLOGICALMAP_H_
 
 #include <armadillo>
+#include <limits>
 
 namespace topolog_map{
 
@@ -77,6 +78,80 @@ inline void build_adjacency_matrix(arma::Mat<int>& A, const arma::mat& grid, dou
 
 }
 
+
+inline void partition_space(const arma::mat& grid,std::vector<arma::mat>& grids, std::size_t dim){
+
+    // first partition along dimension 0 or 1
+
+
+
+    // find boundary
+    double min, max;
+    std::size_t min_i, max_i;
+
+    min = std::numeric_limits<double>::max();
+    max = std::numeric_limits<double>::min();
+
+    //    std::cout<< "grid: " << grid.n_rows << " x " << grid.n_cols << std::endl;
+
+    for(std::size_t i = 0; i < grid.n_rows;i++)
+    {
+        if(grid(i,dim) < min){
+            min     = grid(i,dim);
+            min_i   = i;
+        }
+        if(grid(i,dim) > max){
+            max     = grid(i,dim);
+            max_i   = i;
+        }
+    }
+
+    double decision_step = (max - min) / 2.0;
+   // std::cout<< "decision_step: " << decision_step << std::endl;
+
+    /*
+     *
+     * See Armadillo's documentation. For example, you can use X.n_elem to get the length of vector X.
+     * To resize a vector while preserving the data, use .resize(). To add a row or column to a matrix,
+     * use .insert_rows() or .insert_cols().*/
+
+    // partition gird into two
+    grids.resize(2);
+    std::size_t size;
+    int count_one, count_two;
+    count_one = 0;
+    count_two = 0;
+    for(std::size_t i = 0; i < grid.n_rows;i++)
+    {
+        if(grid(i,dim) < decision_step)
+        {
+            count_one++;
+        }else{
+            count_two++;
+        }
+    }
+
+    grids[0].set_size(count_one,2);
+    grids[1].set_size(count_two,2);
+
+    count_one = 0;
+    count_two = 0;
+    for(std::size_t i = 0; i < grid.n_rows;i++)
+    {
+
+        if(grid(i,dim) < decision_step)
+        {
+            grids[0].row(count_one) = grid.row(i);
+            count_one++;
+        }else{
+            grids[1].row(count_two) = grid.row(i);
+            count_two++;
+        }
+    }
+
+
+
+}
 
 
 

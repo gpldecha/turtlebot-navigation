@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(topological_map)
+project(topological_nav)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -12,8 +12,23 @@ find_package(catkin REQUIRED
             base_local_planner
             pluginlib
             optitrack_rviz
+            cmake_modules
+            message_generation
+            std_msgs
 )
+
+add_service_files(
+   FILES
+   String_cmd.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
 catkin_package()
+
 
 find_package(Armadillo)
 if(Armadillo_FOUND)
@@ -39,6 +54,8 @@ set(INC_HEADER          ${INCLUDE_DIR}/topological_map/costmap2topology.h
                         ${INCLUDE_DIR}/online_search/utils.h
                         ${INCLUDE_DIR}/online_search/objective_functions.h
                         ${INCLUDE_DIR}/finite_state_machine/finite_state_machine.h
+                        ${INCLUDE_DIR}/agent/agent.h
+
 
 )
 
@@ -47,7 +64,7 @@ set(SRC_FILE            ${SRC_DIR}/topological_map/costmap2topology.cpp
                         ${SRC_DIR}/topological_map/occupancygrid_listener.cpp
                         ${SRC_DIR}/online_search/online_search.cpp
                         ${SRC_DIR}/finite_state_machine/finite_state_machine.cpp
-
+                        ${SRC_DIR}/agent/agent.cpp
 )
 
 
@@ -60,10 +77,21 @@ target_link_libraries(topological_map ${catkin_LIBRARIES} ${Armadillo_LIBRARIES}
 
 
 ## Declare a C++ executable
-add_executable(topological_map_node src/nodes/topological_map_node.cpp)
-target_link_libraries(topological_map_node topological_map ${catkin_LIBRARIES} ${Armadillo_LIBRARIES})
+add_executable(one_agent_node src/nodes/one_agent_node.cpp)
+target_link_libraries(one_agent_node topological_map ${catkin_LIBRARIES} ${Armadillo_LIBRARIES})
+
+add_executable(two_agents_node src/nodes/two_agents_node.cpp)
+target_link_libraries(two_agents_node topological_map ${catkin_LIBRARIES} ${Armadillo_LIBRARIES})
 
 
 add_executable(test_online_search src/test/test_online_search.cpp)
 target_link_libraries(test_online_search topological_map ${catkin_LIBRARIES} ${Armadillo_LIBRARIES})
+
+
+
+
+
+
+
+
 

@@ -13,13 +13,13 @@ public:
 
     Online_search(const arma::Mat<int>& Adj, const objective_func &obj_func);
 
-    void update_state(const arma::rowvec2& agent_pos, const arma::mat &grid);
-
     /**
      * @brief finds an action which optimises the objective function
      *        for a T=2 planning horizon.
-     */
-    action get_action(std::size_t max_depth=2);
+     **/
+    action get_action(state s_c, state s_l, std::size_t max_depth=2);
+
+    double get_value(action a);
 
     void print() const;
 
@@ -37,10 +37,7 @@ private:
     const objective_func&       obj_func;
 
     std::array<action,4>        actions = {{action::one,action::two,action::three,action::four}};
-    std::array<double,4>        Q       = {{0,0,0,0}};
-    std::array<double,4>        Qtmp    = {{0,0,0,0}};
-
-    state                       s_l, s_c;
+    std::array<double,4>        Q       = {{-10,-10,-10,-10}};
 
     action                      optimal_action;
 
