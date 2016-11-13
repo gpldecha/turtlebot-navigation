@@ -64,6 +64,12 @@ a path which convers the entire map.
 When I first ran the default behaviour the robot would often perfrom complete 360 degree rotations. The local behaviour
 of the robot is dictated by the local planner which in our case is [**base_local_planner**](http://wiki.ros.org/base_local_planner).
 
+## Issues
+I want to subscribe to topic: /move_base/global_costmap/costmap.
+But when I check rostop	hz /move_base/global_costmap/costmap
+WARNING: may be using simulated time
+
+
 ## notes
 
 There are two maps which are used during the execution of a plan
