@@ -11,8 +11,9 @@
 #include <angles/angles.h>
 #include <base_local_planner/world_model.h>
 #include <base_local_planner/costmap_model.h>
-
 #include <armadillo>
+
+#include "visualise/vis_grid.h"
 
 using std::string;
 
@@ -49,6 +50,11 @@ private:
     costmap_2d::Costmap2DROS*               costmap_ros_;
     costmap_2d::Costmap2D*                  costmap_;
     base_local_planner::WorldModel*         world_model_;
+
+    //std::shared_ptr<c2t::CostMap2Topology>  costMap2Top_sptr;
+
+    ros::NodeHandle                         nh;
+    opti_rviz::Vis_gird*                    vis_grid_ptr;
 
 
 };

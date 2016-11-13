@@ -11,6 +11,7 @@ find_package(catkin REQUIRED
             costmap_2d
             base_local_planner
             pluginlib
+            optitrack_rviz
 )
 
 find_package(Armadillo)
@@ -123,6 +124,7 @@ catkin_package(
         costmap_2d
         base_local_planner
         nav_core
+        optitrack_rviz
 #  DEPENDS system_lib
 )
 
@@ -132,16 +134,20 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+
 
 set(INCLUDE_DIR         ${CMAKE_CURRENT_SOURCE_DIR}/include     )
 set(SRC_DIR             ${CMAKE_CURRENT_SOURCE_DIR}/src         )
 
-set(SRC_FILE    ${SRC_DIR}/sweep_planner/sweep_planner.cpp)
-set(INC_HEADER  ${INCLUDE_DIR}/sweep_planner/sweep_planner.h)
+
+set(INC_HEADER          ${INCLUDE_DIR}/sweep_planner/sweep_planner.h
+)
+
+set(SRC_FILE            ${SRC_DIR}/sweep_planner/sweep_planner.cpp
+)
 
 
-include_directories(${INCLUDE_DIR} ${ARMADILLO_INCLUDE_DIR})
+include_directories(${INCLUDE_DIR} ${catkin_INCLUDE_DIRS}  ${ARMADILLO_INCLUDE_DIR})
 
 ## Declare a C++ library
 add_library(sweep_planner ${SRC_FILE} ${INC_HEADER})
@@ -151,8 +157,7 @@ add_library(sweep_planner ${SRC_FILE} ${INC_HEADER})
 ## either from message generation or dynamic reconfigure
 #add_dependencies(sweep_planner  ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} )
 
-## Declare a C++ executable
-# add_executable(sweep_planner_node src/sweep_planner_node.cpp)
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -160,6 +165,9 @@ add_library(sweep_planner ${SRC_FILE} ${INC_HEADER})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(sweep_planner ${catkin_LIBRARIES} ${Armadillo_LIBRARIES})
+
+
+
 
 #############
 ## Install ##

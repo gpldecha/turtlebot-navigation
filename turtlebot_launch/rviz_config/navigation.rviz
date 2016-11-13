@@ -4,12 +4,15 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
+        - /Status1
         - /TF1/Frames1
         - /TF1/Tree1
         - /Global Map1/Planner1
         - /Local Map1/Costmap1
         - /Local Map1/Planner1
         - /DepthCloud1/Auto Size1
+        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 747
   - Class: rviz/Selection
@@ -400,7 +403,7 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
-          Max Intensity: 354.4
+          Max Intensity: 404.3
           Min Color: 0; 0; 0
           Min Intensity: 0
           Name: Cost Cloud
@@ -430,9 +433,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
-          Max Intensity: 9.8
+          Max Intensity: 26.4
           Min Color: 0; 0; 0
-          Min Intensity: 1.2
+          Min Intensity: 11.2
           Name: Trajectory Cloud
           Position Transformer: XYZ
           Queue Size: 10
@@ -450,11 +453,11 @@ Visualization Manager:
     - Arrow Length: 0.2
       Class: rviz/PoseArray
       Color: 0; 192; 0
-      Enabled: false
+      Enabled: true
       Name: Amcl Particle Swarm
       Topic: /particlecloud
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
@@ -483,8 +486,8 @@ Visualization Manager:
         Value: true
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.12841
-        Min Value: -0.0303466
+        Max Value: 1.12594
+        Min Value: -0.0305441
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -496,7 +499,7 @@ Visualization Manager:
       Decay Time: 0
       Depth Map Topic: /camera/depth/image_raw
       Depth Map Transport Hint: raw
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -514,7 +517,7 @@ Visualization Manager:
       Topic Filter: true
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -527,7 +530,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -544,6 +547,14 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
+      Value: false
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /grid_vis
+      Name: MarkerArray
+      Namespaces:
+        "": true
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -568,22 +579,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 6.35526
+      Distance: 5.99004
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.24893
-        Y: 3.40109
-        Z: 1.96864e-06
+        X: -0.24899
+        Y: 1.16417
+        Z: 4.77274e-07
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.96476
+      Pitch: 0.81976
       Target Frame: <Fixed Frame>
       Value: ThirdPersonFollower (rviz)
-      Yaw: 2.03818
+      Yaw: 2.54818
     Saved: ~
 Window Geometry:
   Displays:
