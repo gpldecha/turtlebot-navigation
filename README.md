@@ -79,6 +79,10 @@ There are two maps which are used during the execution of a plan
 
 # resources
 
+### Super usefull library
+
+* [grid_map](https://github.com/ethz-asl/grid_map) 
+
 ### turtle bot
 
 * [Setup the Navigation Stack for TurtleBot](http://wiki.ros.osuosl.org/turtlebot_navigation/Tutorials/indigo/Setup%20the%20Navigation%20Stack%20for%20TurtleBot)
