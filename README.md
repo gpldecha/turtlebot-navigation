@@ -74,7 +74,7 @@ WARNING: may be using simulated time
 
 There are two maps which are used during the execution of a plan
 
-* 
+* [staticmap](http://wiki.ros.org/costmap_2d/hydro/staticmap)
 
 
 # resources
