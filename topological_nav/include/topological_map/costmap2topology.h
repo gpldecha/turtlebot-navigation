@@ -9,29 +9,55 @@
 // should fetch the global cost map once at initialisation
 // nav_msgs/OccupancyGrid
 
+#include <grid_map_ros/GridMapRosConverter.hpp>
+
 
 namespace c2t{
 
 
-class CostMap2Topology{
+class OccupancyMap2Topology{
 
 public:
 
-    CostMap2Topology(const costmap_2d::Costmap2D& costmap);
+    OccupancyMap2Topology(grid_map::GridMap& map);
 
     /**
      * @returns armadillo martrix with N * M 2D points
      */
     const arma::mat& getGrid() const;
 
+    void get_frame_reference(arma::colvec3 &T, arma::mat33 &Rot);
+
+    void get_bbox();
+
+    void adapt_grid(arma::mat& grid);
+
 private:
+
+
+    void get_points();
+
+    double closest_dist(const arma::rowvec2& p, const arma::mat&grid, std::size_t& idx )const ;
+
 
     void create_topological_map();
 
+public:
+
+    arma::colvec3 tt, bb, bt, tb;
+    arma::mat g_points;
+    arma::mat b_points;
+
 private:
 
-    const costmap_2d::Costmap2D& costmap;
+    grid_map::GridMap& map;
     arma::mat grid;
+
+
+
+
+
+
 
 };
 

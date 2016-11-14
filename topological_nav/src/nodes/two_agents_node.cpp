@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     // ----------------- SETUP DISCRETE STATES AND ADJACENCY MATRIX ----------------- //
 
     arma::mat grid;
-    topolog_map::create_2d_grid(grid,0,0,10,10,1);
+    topolog_map::create_2d_grid(grid,0,0,10,10,10,10);
 
     std::vector<arma::mat> grids(2);
     topolog_map::partition_space(grid,grids,0);

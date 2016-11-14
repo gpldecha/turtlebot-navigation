@@ -5,7 +5,9 @@
 
 #include "agent/agent.h"
 
-
+void occupancygrid_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg){
+    std::cout<< "occupancygrid_callback !! " << std::endl;
+}
 
 int main(int argc, char** argv)
 {
@@ -14,7 +16,7 @@ int main(int argc, char** argv)
     // -------------- Get node input paramters --------------
 
     std::map<std::string,std::string> input;
-    input["-occupancy_topic"]   = "/world_frame";
+    input["-occupancy_topic"]   = "/move_base/global_costmap/costmap_updates";
     input["-fixed_frame"]       = "/world_frame";
     input["-rate"]              = "30";
 
@@ -26,7 +28,7 @@ int main(int argc, char** argv)
 
     double      rate_hz               = boost::lexical_cast<double>(input["-rate"]);
     std::string fixed_frame           = input["-fixed_frame"];
-    std::string occupancy_grid_topic  = input["-occupancy_topic"];
+    std::string occupancy_grid_topic  = "/move_base/global_costmap/costmap";//input["-occupancy_topic"];
 
     // ----------------- INITIALISE NODE ----------------- //
 
@@ -35,11 +37,15 @@ int main(int argc, char** argv)
 
     // ----------------- SETUP DISCRETE STATES AND ADJACENCY MATRIX ----------------- //
 
+    ROS_INFO("Initialise Occupancy Grid Map Listener");
     // c2t::OccupancyGridListener occupancyGridListener(occupancy_grid_topic,nh);
     //occupancyGridListener.wait_msg();
+    //nh.subscribe(topic_name, 10, &OccupancyGridListener::occupancygrid_callback, this);
+
+    ros::Subscriber sub = nh.subscribe("/map",100,occupancygrid_callback);
 
     arma::mat grid;
-    topolog_map::create_2d_grid(grid,0,0,10,10,1);
+    topolog_map::create_2d_grid(grid,0,0,10,10,10,10);
 
     ROS_INFO("Grids Initalised!");
 

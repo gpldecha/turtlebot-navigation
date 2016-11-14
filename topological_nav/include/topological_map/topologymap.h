@@ -4,23 +4,35 @@
 #include <armadillo>
 #include <limits>
 
+
 namespace topolog_map{
+
+class Map{
+
+public:
+
+    Map(){}
+
+    arma::colvec3 origin;
+};
 
 
 /**
  * @brief  Creates a 2D grid stored in a (N * M x 2) matrix
  */
-inline void create_2d_grid(arma::mat& grid, const double origin_m,const double origin_n, const double length_m, const double length_n,const double resolution){
+inline void create_2d_grid(arma::mat& grid, const double origin_m,const double origin_n,
+                                            const double length_m, const double length_n,
+                                            std::size_t M ,std::size_t N ){
 
     std::cout<< "     Creating Grid    " << std::endl;
-    std::cout<< "         length_m : " << length_m << std::endl;
-    std::cout<< "         length_n : " << length_n << std::endl;
-    std::cout<< "       resolution : " << resolution << std::endl;
 
-
-    std::size_t M       = length_m / resolution;
-    std::size_t N       = length_n / resolution;
     std::size_t n_rows  = N * M;
+
+    double resolution_m = length_m / static_cast<double>(M);
+    double resolution_n = length_n / static_cast<double>(N);
+
+    double tran_m = -length_m / 2.0 + origin_m;
+    double tran_n = -length_n / 2.0 + origin_n;
 
     grid.set_size(n_rows,2);
 
@@ -30,14 +42,16 @@ inline void create_2d_grid(arma::mat& grid, const double origin_m,const double o
     {
         for(std::size_t n = 0; n < N; n++)
         {
-            grid(r,0) = (static_cast<double>(m) - origin_m)/resolution;
-            grid(r,1) = (static_cast<double>(n) - origin_n)/resolution;
+            grid(r,0) =  static_cast<double>(m) * resolution_m + tran_m;
+            grid(r,1) =  static_cast<double>(n) * resolution_n + tran_n;
             r++;
         }
     }
 
     std::cout<< "  GRID: " << n_rows << std::endl;
 }
+
+
 
 /**
  * @brief Given a set of points [grid] computes the connectivity of the grath.
@@ -68,10 +82,11 @@ inline void build_adjacency_matrix(arma::Mat<int>& A, const arma::mat& grid, dou
 
              tmp = grid.row(indices(j)) - grid.row(i);
 
-            if(tmp(0) == 0 || tmp(1) == 0 && arma::norm(tmp) <= max_distance )
-            {
+             //tmp(0) == 0 || tmp(1) == 0 &&
+            //if(arma::norm(tmp,1) <= max_distance )
+            //{
                 A(i,j-1) = indices(j);
-            }
+           // }
         }
     }
 

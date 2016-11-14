@@ -12,6 +12,7 @@ find_package(catkin REQUIRED
             base_local_planner
             pluginlib
             optitrack_rviz
+            topological_nav
 )
 
 find_package(Armadillo)
@@ -125,6 +126,7 @@ catkin_package(
         base_local_planner
         nav_core
         optitrack_rviz
+        topological_nav
 #  DEPENDS system_lib
 )
 

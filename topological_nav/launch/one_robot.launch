@@ -8,11 +8,11 @@
 	<!--param name="/use_sim_time" 	value="true"/-->
 
 
-	<node name="one_agent_node" pkg="topological_nav" type="one_agent_node" args="-fixed_frame $(arg fixed_frame) -occupancy_topic $(arg occupancy_topic) -rate 10" output="screen"/>
+	<node name="one_robot_node" pkg="topological_nav" type="one_robot_node" args="-fixed_frame $(arg fixed_frame) -occupancy_topic $(arg occupancy_topic) -rate 10" output="screen"/>
 
 	<!-- rviz launch -->
 	<group if="$(arg use_rviz)">
-  		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find topological_nav)/launch/rviz_config/one_agents.rviz"/>
+  		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find topological_nav)/launch/rviz_config/one_robot.rviz"/>
 	</group>
 
 </launch>

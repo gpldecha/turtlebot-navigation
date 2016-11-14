@@ -1,12 +1,11 @@
-#include "agent/agent.h"
+#include "agent/robot_agent.h"
 
 namespace search{
 
 
-Agent::Agent(const std::string &name, ros::NodeHandle& nh, const arma::mat& grid, const arma::colvec3 &agent_pos_3D, objective_func &obj_func, arma::ucolvec &occupancy):
+RobotAgent::RobotAgent(const std::string &name, ros::NodeHandle& nh, const arma::mat& grid, objective_func &obj_func, arma::ucolvec &occupancy):
   name(name),
   grid(grid),
-  agent_pos_3D(agent_pos_3D),
   occupancy(occupancy)
 {
 
@@ -16,9 +15,7 @@ Agent::Agent(const std::string &name, ros::NodeHandle& nh, const arma::mat& grid
     last_state      = 0;
     target_state    = 0;
 
-    topolog_map::build_adjacency_matrix(Adj,grid,4);
-
-    Adj.print("Adj");
+    topolog_map::build_adjacency_matrix(Adj,grid,1);
 
     online_search_ptr.reset(new search::Online_search(Adj,obj_func));
 
@@ -26,32 +23,63 @@ Agent::Agent(const std::string &name, ros::NodeHandle& nh, const arma::mat& grid
     double check_rate       = 1;
     fsm_ptr.reset( new search::FSM(grid,dist_threashold,check_rate,ros::Time::now()));
 
-  //  service                 = nh.advertiseService(service_name,&Cmd_interface::service_callback,this);
+    service = nh.advertiseService(name + "_cmd", &RobotAgent::service_callback,this);
 
-    service = nh.advertiseService(name + "_cmd", &Agent::service_callback,this);
+
+
+    //tell the action client that we want to spin a thread by default
+
+    move_base_client_ptr.reset( new MoveBaseClient("move_base", true) );
+
+
+    //wait for the action server to come up
+    while(!move_base_client_ptr->waitForServer(ros::Duration(5.0))){
+      ROS_INFO("Waiting for the move_base action server to come up");
+    }
+
+
+    //we'll send a goal to the robot to move 1 meter forward
+    goal.target_pose.header.frame_id = "base_link";
+
+
+    /*
+    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
+      ROS_INFO("Hooray, the base moved 1 meter forward");
+    }else{
+      ROS_INFO("The base failed to move forward 1 meter for some reason");
+    }
+    */
+
+
+
 }
 
 
 
-void Agent::start(){
+void RobotAgent::start(const arma::colvec3 &robot_position){
 
-    agent_pos_2D    = agent_pos_3D(arma::span(0,1)).st();
 
-    period          = 1.0/60.0;
+    agent_pos_2D        = robot_position(arma::span(0,1)).st();
+    agent_sim_pos_3D    = robot_position;
 
-    current_state   = search::get_state(agent_pos_2D,grid);
-    target_state    = current_state;
-    last_state      = current_state;
+    period              = 1.0/60.0;
+
+    current_state       = search::get_state(agent_pos_2D,grid);
+    target_state        = current_state;
+    last_state          = current_state;
 
     fsm_ptr->set_target(target_state);
 }
 
-void Agent::update(const ros::Time& now){
+void RobotAgent::update(const ros::Time& now, const arma::colvec3& robot_position){
+
+
 
     if(!bRun)
         return;
 
-    agent_pos_2D = agent_pos_3D(arma::span(0,1)).st();
+    agent_pos_2D(0) = robot_position(0);
+    agent_pos_2D(1) = robot_position(1);
 
     //agent_pos_2D.print("agent_pos_2D");
 
@@ -71,13 +99,6 @@ void Agent::update(const ros::Time& now){
         last_state       = current_state;
         current_state    = search::get_state(agent_pos_2D,grid);
 
-        /*std::cout<< "current_state: " << current_state << std::endl;
-        std::cout<< "last_state: " << last_state << std::endl;
-        std::cout<< "Adj:       " << Adj.n_rows << " x " << Adj.n_cols << std::endl;
-        std::cout<< "grid:      " << grid.n_rows << " x " << grid.n_cols << std::endl;
-        std::cout<< "occupancy: " << occupancy.n_elem << std::endl;*/
-
-
         search::action a = online_search_ptr->get_action(current_state,last_state,1);
 
         target_state     = search::forward_dynamics(current_state,a,Adj);
@@ -88,25 +109,32 @@ void Agent::update(const ros::Time& now){
         target_pos_3D(arma::span(0,1)) = grid.row(target_state).st();
         search::set_color(occupancy,colors);
 
+        goal.target_pose.header.stamp = ros::Time::now();
+        goal.target_pose.pose.position.x    = target_pos_3D(0);
+        goal.target_pose.pose.position.y    = target_pos_3D(1);
+
+        goal.target_pose.pose.orientation.w = 1.0;
+
+        ROS_INFO("Sending goal");
+        move_base_client_ptr->sendGoal(goal);
     }
 
-    search::get_velocity(velocity,agent_pos_3D,target_pos_3D,max_speed,period);
-
-    agent_pos_3D = agent_pos_3D + velocity;
+    search::get_velocity(velocity,agent_sim_pos_3D,target_pos_3D,max_speed,period);
+    agent_sim_pos_3D = agent_sim_pos_3D + velocity;
 
 }
 
 
-void Agent::publish(){
+void RobotAgent::publish(){
 
     if(!bVisionInit)
         ROS_WARN_STREAM_THROTTLE(1.0,"Agent::initialise_visualisation has not been called!");
 
     // update visualisation
 
-    agent_pos_vis[0].setX(agent_pos_3D(0));
-    agent_pos_vis[0].setY(agent_pos_3D(1));
-    agent_pos_vis[0].setZ(agent_pos_3D(2));
+    agent_pos_vis[0].setX(agent_sim_pos_3D(0));
+    agent_pos_vis[0].setY(agent_sim_pos_3D(1));
+    agent_pos_vis[0].setZ(agent_sim_pos_3D(2));
     vis_point_ptr->update(agent_pos_vis);
 
     // plot grid
@@ -125,7 +153,8 @@ void Agent::publish(){
 
 }
 
-void Agent::initialise_visualisation(ros::NodeHandle &nh, const std::string& fixed_frame){
+
+void RobotAgent::initialise_visualisation(ros::NodeHandle &nh, const std::string& fixed_frame){
 
 
     // visualise the grid
@@ -140,7 +169,7 @@ void Agent::initialise_visualisation(ros::NodeHandle &nh, const std::string& fix
 
     // visualise the agent
     agent_pos_vis.resize(1);
-    agent_pos_vis[0] = tf::Vector3(agent_pos_3D(0),agent_pos_3D(1),agent_pos_3D(2));
+    agent_pos_vis[0] = tf::Vector3(agent_sim_pos_3D(0),agent_sim_pos_3D(1),agent_sim_pos_3D(2));
 
     vis_point_ptr.reset( new opti_rviz::Vis_points(nh,name) );
 
@@ -160,7 +189,7 @@ void Agent::initialise_visualisation(ros::NodeHandle &nh, const std::string& fix
 
 }
 
-bool Agent::has_finished_task(){
+bool RobotAgent::has_finished_task(){
     for(int i = 0; i < occupancy.n_elem;i++)
     {
         if(occupancy(i) == 0)
@@ -170,7 +199,7 @@ bool Agent::has_finished_task(){
 }
 
 
-bool Agent::service_callback(topological_nav::String_cmd::Request& req, topological_nav::String_cmd::Response& res){
+bool RobotAgent::service_callback(topological_nav::String_cmd::Request& req, topological_nav::String_cmd::Response& res){
 
     std::string cmd = req.cmd;
 
@@ -187,7 +216,6 @@ bool Agent::service_callback(topological_nav::String_cmd::Request& req, topologi
     }
 
 }
-
 
 
 }

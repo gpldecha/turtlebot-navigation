@@ -56,6 +56,8 @@
   <build_depend>        optitrack_rviz      </build_depend>
   <run_depend>          optitrack_rviz      </run_depend>
 
+  <build_depend>        topological_nav      </build_depend>
+  <run_depend>          topological_nav      </run_depend>
 
   <build_depend>        eigen               </build_depend>
   <run_depend>          eigen               </run_depend>

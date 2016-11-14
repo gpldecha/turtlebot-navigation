@@ -31,6 +31,9 @@
 
 	<param name="base_global_planner" value="global_planner/Sweep"/>
 
+	<!--param name="base_global_planner" value="carrot_planner/CarrotPlanner" /-->  
+
+
    
     	<!-- external params file that could be loaded into the move_base namespace -->
     	<rosparam file="$(arg custom_param_file)" command="load" />
