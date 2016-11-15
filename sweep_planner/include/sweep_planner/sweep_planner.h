@@ -17,6 +17,7 @@
 
 #include "agent/agent.h"
 
+#include <geometry_msgs/Pose2D.h>
 
 using std::string;
 
@@ -41,6 +42,8 @@ public:
 
 private:
 
+    void    goal_callback(const geometry_msgs::Pose2D::ConstPtr& msg);
+
     double  footprintCost(double x_i, double y_i, double theta_i);
 
 private:
@@ -57,8 +60,13 @@ private:
 
     //std::shared_ptr<c2t::CostMap2Topology>  costMap2Top_sptr;
 
+    double                                  x_pos_goal;
+    double                                  y_pos_goal;
+    bool                                    bReceivedGoal;
+
     ros::NodeHandle                         nh;
     opti_rviz::Vis_gird*                    vis_grid_ptr;
+    ros::Subscriber                         sub;
 
 
 

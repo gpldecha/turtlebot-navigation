@@ -25,7 +25,6 @@ int main(int argc, char** argv)
 
     double      rate_hz               = boost::lexical_cast<double>(input["-rate"]);
     std::string fixed_frame           = input["-fixed_frame"];
-    std::string occupancy_grid_topic  = input["-occupancy_topic"];
 
     // ----------------- INITIALISE NODE ----------------- //
 
@@ -36,10 +35,10 @@ int main(int argc, char** argv)
     // ----------------- SETUP DISCRETE STATES AND ADJACENCY MATRIX ----------------- //
 
     arma::mat grid;
-    topolog_map::create_2d_grid(grid,0,0,10,10,10,10);
+    topolog_map::TopologyMap::create_2d_grid(grid,0,0,10,10,10,10);
 
     std::vector<arma::mat> grids(2);
-    topolog_map::partition_space(grid,grids,0);
+    topolog_map::TopologyMap::partition_space(grid,grids,0);
 
     std::cout<< "grids[0]: " << grids[0].n_rows << " x " << grids[0].n_cols << std::endl;
     std::cout<< "grids[1]: " << grids[1].n_rows << " x " << grids[1].n_cols << std::endl;

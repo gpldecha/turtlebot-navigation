@@ -16,7 +16,7 @@ Agent::Agent(const std::string &name, ros::NodeHandle& nh, const arma::mat& grid
     last_state      = 0;
     target_state    = 0;
 
-    topolog_map::build_adjacency_matrix(Adj,grid,4);
+    topolog_map::TopologyMap::build_adjacency_matrix(Adj,grid,1);
 
     Adj.print("Adj");
 

@@ -2,11 +2,11 @@
 <launch>
 
 	<arg name="fixed_frame" 	value="/map"/>
-	<arg name="occupancy_topic" 	value="/move_base/global_costmap/costmap"/>
+
 
 	<!--param name="/use_sim_time" 	value="true"/-->
 
-	<node name="two_agents_node" pkg="topological_nav" type="two_agents_node" args="-fixed_frame $(arg fixed_frame) -occupancy_topic $(arg occupancy_topic) -rate 10" output="screen"/>
+	<node name="two_agents_node" pkg="topological_nav" type="two_agents_node" args="-fixed_frame $(arg fixed_frame) -rate 100" output="screen"/>
 
 	<!-- rviz launch -->
 

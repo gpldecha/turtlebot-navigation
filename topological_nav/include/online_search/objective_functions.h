@@ -7,7 +7,6 @@
 
 namespace search{
 
-//arma::ucolvec& occupancy, arma::mat& grid
 inline double objective_function_one(state s_l, state s_c, state s_n,const arma::ucolvec& occupancy, const arma::mat& grid){
 
     if(s_c == s_n) // did not move

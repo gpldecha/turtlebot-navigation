@@ -62,6 +62,10 @@
   <build_depend>        eigen               </build_depend>
   <run_depend>          eigen               </run_depend>
 
+  <build_depend>        geometry_msgs               </build_depend>
+  <run_depend>          geometry_msgs               </run_depend>
+
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

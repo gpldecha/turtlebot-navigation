@@ -13,6 +13,7 @@ find_package(catkin REQUIRED
             pluginlib
             optitrack_rviz
             topological_nav
+            geometry_msgs
 )
 
 find_package(Armadillo)

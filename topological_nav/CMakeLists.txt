@@ -63,7 +63,6 @@ set(SRC_DIR             ${CMAKE_CURRENT_SOURCE_DIR}/src         )
 
 
 set(INC_HEADER          ${INCLUDE_DIR}/topological_map/costmap2topology.h
-                        ${INCLUDE_DIR}/topological_map/rviz_topology.h
                         ${INCLUDE_DIR}/topological_map/topologymap.h
                         ${INCLUDE_DIR}/topological_map/occupancygrid_listener.h
                         ${INCLUDE_DIR}/topological_map/vis_map.h
@@ -77,9 +76,9 @@ set(INC_HEADER          ${INCLUDE_DIR}/topological_map/costmap2topology.h
 )
 
 set(SRC_FILE            ${SRC_DIR}/topological_map/costmap2topology.cpp
-                        ${SRC_DIR}/topological_map/rviz_topology.cpp
                         ${SRC_DIR}/topological_map/occupancygrid_listener.cpp
                         ${SRC_DIR}/topological_map/vis_map.cpp
+                        ${SRC_DIR}/topological_map/topologymap.cpp
                         ${SRC_DIR}/online_search/online_search.cpp
                         ${SRC_DIR}/finite_state_machine/finite_state_machine.cpp
                         ${SRC_DIR}/agent/agent.cpp

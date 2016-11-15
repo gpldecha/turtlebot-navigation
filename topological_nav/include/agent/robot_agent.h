@@ -22,6 +22,7 @@
 
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
+#include <geometry_msgs/Pose2D.h>
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
@@ -50,8 +51,11 @@ public:
 
    bool has_finished_task();
 
+   void send_robot_goal(arma::rowvec2 coordinate, const double target_yaw);
 
 private:
+
+
 
     bool service_callback(topological_nav::String_cmd::Request& req, topological_nav::String_cmd::Response& res);
 
@@ -73,15 +77,20 @@ private:
 
     arma::rowvec2                                  agent_pos_2D;
     arma::colvec3                                  target_pos_3D;
+    arma::rowvec2                                  target_pos_2D;
 
     std::unique_ptr<search::FSM>                   fsm_ptr;
     std::unique_ptr<search::Online_search>         online_search_ptr;
 
     std::unique_ptr<opti_rviz::Vis_gird>           vis_grid_ptr;
-    std::unique_ptr<opti_rviz::Vis_points>         vis_point_ptr;
+    std::unique_ptr<opti_rviz::Vis_points>         vis_agent_pos_ptr;
+    std::unique_ptr<opti_rviz::Vis_points>         vis_target_pos_ptr;
+
     std::unique_ptr< opti_rviz::Vis_points>        vis_neighbours_ptr;
 
-    std::vector<tf::Vector3>                       agent_pos_vis;
+    std::vector<tf::Vector3>                       vis_agent_point;
+    std::vector<tf::Vector3>                       vis_target_point;
+
 
     std::vector<tf::Vector3>                       neighbours;
     opti_rviz::acolor                              colors;
@@ -93,7 +102,10 @@ private:
 
     std::unique_ptr<MoveBaseClient>                move_base_client_ptr;
 
-    move_base_msgs::MoveBaseGoal                   goal;
+    ros::Publisher                                 pub;
+
+    bool                                           bMovingRobot;
+    std::size_t                                    count_goals;
 
 
 };

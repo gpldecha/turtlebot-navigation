@@ -1,4 +1,11 @@
 #include "agent/robot_agent.h"
+#include "topological_map/topologymap.h"
+
+#include <tf/LinearMath/Quaternion.h>
+#include <tf/LinearMath/Vector3.h>
+#include <tf/LinearMath/Matrix3x3.h>
+#include <tf/transform_datatypes.h>
+
 
 namespace search{
 
@@ -15,15 +22,19 @@ RobotAgent::RobotAgent(const std::string &name, ros::NodeHandle& nh, const arma:
     last_state      = 0;
     target_state    = 0;
 
-    topolog_map::build_adjacency_matrix(Adj,grid,1);
+    topolog_map::TopologyMap::build_adjacency_matrix(Adj,grid,1);
 
     online_search_ptr.reset(new search::Online_search(Adj,obj_func));
 
-    double dist_threashold  = 0.1;
+    double dist_threashold  = 0.5;
     double check_rate       = 1;
     fsm_ptr.reset( new search::FSM(grid,dist_threashold,check_rate,ros::Time::now()));
 
     service = nh.advertiseService(name + "_cmd", &RobotAgent::service_callback,this);
+
+    pub = nh.advertise<geometry_msgs::Pose2D>("goal_sweeper", 100);
+
+
 
 
 
@@ -32,32 +43,12 @@ RobotAgent::RobotAgent(const std::string &name, ros::NodeHandle& nh, const arma:
     move_base_client_ptr.reset( new MoveBaseClient("move_base", true) );
 
 
-    //wait for the action server to come up
-    while(!move_base_client_ptr->waitForServer(ros::Duration(5.0))){
-      ROS_INFO("Waiting for the move_base action server to come up");
-    }
-
-
-    //we'll send a goal to the robot to move 1 meter forward
-    goal.target_pose.header.frame_id = "base_link";
-
-
-    /*
-    if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
-      ROS_INFO("Hooray, the base moved 1 meter forward");
-    }else{
-      ROS_INFO("The base failed to move forward 1 meter for some reason");
-    }
-    */
-
-
-
 }
 
 
 
 void RobotAgent::start(const arma::colvec3 &robot_position){
-
+    ROS_INFO("RobotAgent::start (start)");
 
     agent_pos_2D        = robot_position(arma::span(0,1)).st();
     agent_sim_pos_3D    = robot_position;
@@ -65,14 +56,84 @@ void RobotAgent::start(const arma::colvec3 &robot_position){
     period              = 1.0/60.0;
 
     current_state       = search::get_state(agent_pos_2D,grid);
-    target_state        = current_state;
     last_state          = current_state;
 
+    // find closet point
+    std::size_t idx;
+    topolog_map::TopologyMap::closest_point(agent_pos_2D,grid,idx);
+
+    target_state                   = idx;
+    target_pos_2D                  = grid.row(target_state);
+
+    target_pos_3D(0)               = target_pos_2D(0);
+    target_pos_3D(1)               = target_pos_2D(1);
+
+
+    count_goals                    = 0;
+
     fsm_ptr->set_target(target_state);
+    ROS_INFO("RobotAgent::start (end)");
+    bMovingRobot = false;
+
+}
+
+void RobotAgent::send_robot_goal(arma::rowvec2 coordinate,const double target_yaw){
+
+    ROS_INFO_STREAM("DEBUG    SEND_ROBOT_GOAL (start)");
+
+
+    move_base_msgs::MoveBaseGoal          goal;
+    goal.target_pose.header.frame_id    = "base_link";
+    goal.target_pose.header.stamp       = ros::Time::now();
+    goal.target_pose.pose.position.x    = coordinate(0);
+    goal.target_pose.pose.position.y    = coordinate(1);
+
+    ROS_INFO_STREAM("DEBUG   TARGET " << coordinate(0) << " " << coordinate(1) );
+
+
+    tf::Quaternion goal_quat = tf::createQuaternionFromYaw(target_yaw);
+    goal.target_pose.pose.orientation.x = goal_quat.x();
+    goal.target_pose.pose.orientation.y = goal_quat.y();
+    goal.target_pose.pose.orientation.z = goal_quat.z();
+    goal.target_pose.pose.orientation.w = goal_quat.w();
+
+
+    actionlib::SimpleClientGoalState astate = move_base_client_ptr->getState();
+    typedef actionlib::SimpleClientGoalState::StateEnum StateEnum;
+
+    if(astate.state_ != StateEnum::SUCCEEDED)
+    {
+
+        move_base_client_ptr->cancelGoal();
+
+        bool finished_before_timeout = move_base_client_ptr->waitForResult(ros::Duration(5.0));
+
+         if (finished_before_timeout)
+         {
+           astate = move_base_client_ptr->getState();
+           ROS_INFO("Action finished: %s",astate.toString().c_str());
+         }
+         else
+           ROS_INFO("Action did not finish before the time out.");
+
+    }
+
+
+    //goal.target_pose.pose.orientation.w = angle;
+    ROS_INFO("Sending goal");
+    move_base_client_ptr->sendGoal(goal);
+
+    geometry_msgs::Pose2D pose_2D_msg;
+    pose_2D_msg.x = coordinate(0);
+    pose_2D_msg.y = coordinate(1);
+
+    pub.publish(pose_2D_msg);
+
+
+   ROS_INFO_STREAM("DEBUG    SEND_ROBOT_GOAL (end)");
 }
 
 void RobotAgent::update(const ros::Time& now, const arma::colvec3& robot_position){
-
 
 
     if(!bRun)
@@ -81,20 +142,23 @@ void RobotAgent::update(const ros::Time& now, const arma::colvec3& robot_positio
     agent_pos_2D(0) = robot_position(0);
     agent_pos_2D(1) = robot_position(1);
 
+    actionlib::SimpleClientGoalState astate = move_base_client_ptr->getState();
+
+     ROS_INFO_STREAM_THROTTLE(1.0,"ActionServer state: " << astate.toString());
     //agent_pos_2D.print("agent_pos_2D");
 
     if(fsm_ptr->has_reached_target(agent_pos_2D,now))
     {
-        ROS_INFO_STREAM("Has reached target");
+        ROS_INFO_STREAM("Has reached target:    " << count_goals);
 
         occupancy(fsm_ptr->get_target()) = 1;
+        count_goals++;
 
         if(has_finished_task()){
             bRun = false;
             ROS_INFO_STREAM("..........Task complete!");
             return;
         }
-
 
         last_state       = current_state;
         current_state    = search::get_state(agent_pos_2D,grid);
@@ -106,17 +170,18 @@ void RobotAgent::update(const ros::Time& now, const arma::colvec3& robot_positio
 
         fsm_ptr->set_target(target_state);
 
-        target_pos_3D(arma::span(0,1)) = grid.row(target_state).st();
+        target_pos_2D                  = grid.row(target_state);
+        target_pos_3D(0)               = target_pos_2D(0);
+        target_pos_3D(1)               = target_pos_2D(1);
+
         search::set_color(occupancy,colors);
 
-        goal.target_pose.header.stamp = ros::Time::now();
-        goal.target_pose.pose.position.x    = target_pos_3D(0);
-        goal.target_pose.pose.position.y    = target_pos_3D(1);
+        send_robot_goal(target_pos_2D,0);
+        bMovingRobot = true;
 
-        goal.target_pose.pose.orientation.w = 1.0;
-
-        ROS_INFO("Sending goal");
-        move_base_client_ptr->sendGoal(goal);
+    }else if(!bMovingRobot){
+        send_robot_goal(target_pos_2D,0);
+        bMovingRobot = true;
     }
 
     search::get_velocity(velocity,agent_sim_pos_3D,target_pos_3D,max_speed,period);
@@ -132,10 +197,19 @@ void RobotAgent::publish(){
 
     // update visualisation
 
-    agent_pos_vis[0].setX(agent_sim_pos_3D(0));
-    agent_pos_vis[0].setY(agent_sim_pos_3D(1));
-    agent_pos_vis[0].setZ(agent_sim_pos_3D(2));
-    vis_point_ptr->update(agent_pos_vis);
+    vis_agent_point[0].setX(agent_sim_pos_3D(0));
+    vis_agent_point[0].setY(agent_sim_pos_3D(1));
+    vis_agent_point[0].setZ(agent_sim_pos_3D(2));
+
+    vis_target_point[0].setX(target_pos_3D(0));
+    vis_target_point[0].setY(target_pos_3D(1));
+    vis_target_point[0].setZ(target_pos_3D(2));
+
+
+    vis_agent_pos_ptr->update(vis_agent_point);
+
+    vis_target_pos_ptr->update(vis_target_point);
+
 
     // plot grid
     vis_grid_ptr->update(colors);
@@ -143,7 +217,11 @@ void RobotAgent::publish(){
 
 
     // plot agent
-    vis_point_ptr->publish();
+    vis_agent_pos_ptr->publish();
+
+    // plot target
+    vis_target_pos_ptr->publish();
+
 
     // plot neighbours
 
@@ -168,14 +246,23 @@ void RobotAgent::initialise_visualisation(ros::NodeHandle &nh, const std::string
     opti_rviz::set_all_colors(colors,color);
 
     // visualise the agent
-    agent_pos_vis.resize(1);
-    agent_pos_vis[0] = tf::Vector3(agent_sim_pos_3D(0),agent_sim_pos_3D(1),agent_sim_pos_3D(2));
+    vis_agent_point.resize(1);
+    vis_agent_point[0] = tf::Vector3(agent_sim_pos_3D(0),agent_sim_pos_3D(1),agent_sim_pos_3D(2));
 
-    vis_point_ptr.reset( new opti_rviz::Vis_points(nh,name) );
 
-    vis_point_ptr->r = 1; vis_point_ptr->g = 1; vis_point_ptr->b = 1;
-    vis_point_ptr->scale = 0.15;
-    vis_point_ptr->initialise(fixed_frame,agent_pos_vis);
+    vis_agent_pos_ptr.reset( new opti_rviz::Vis_points(nh,name) );
+
+    vis_agent_pos_ptr->r = 1; vis_agent_pos_ptr->g = 1; vis_agent_pos_ptr->b = 1;
+    vis_agent_pos_ptr->scale = 0.15;
+    vis_agent_pos_ptr->initialise(fixed_frame,vis_agent_point);
+
+    vis_target_point.resize(1);
+    vis_target_point[0] = tf::Vector3(target_pos_3D(0),target_pos_3D(1),target_pos_3D(2));
+
+    vis_target_pos_ptr.reset( new opti_rviz::Vis_points(nh,name + "_target") );
+    vis_target_pos_ptr->r = 0.5; vis_agent_pos_ptr->g = 0.5; vis_agent_pos_ptr->b = 1;
+    vis_target_pos_ptr->scale = 0.2;
+    vis_target_pos_ptr->initialise(fixed_frame,vis_target_point);
 
     //visualise neighbours
     search::get_neighbours(neighbours,current_state,Adj,grid);

@@ -69,10 +69,10 @@ int main(int argc, char** argv)
     //8,6
 
     arma::mat grid;
-    topolog_map::create_2d_grid(grid,T(0) + 0.4,T(1),7,3.5,8,6);
+    topolog_map::TopologyMap::create_2d_grid(grid,T(0) + 0.45,T(1) + 0.3,6,4.5,6,3);
     // (N x 2)
     arma::mat22 RRot;
-    double angle = 7 * M_PI / 180.0;
+    double angle = 9 * M_PI / 180.0;
     RRot(0,0) = cos(angle);
     RRot(0,1) = -sin(angle);
     RRot(1,0) =  sin(angle);
@@ -109,19 +109,12 @@ int main(int argc, char** argv)
     tf::Matrix3x3   robot_orient;
     arma::colvec3  robot_pos_mat;
 
-    bool bGotPot = false;
+    bool bReceivedMessage = false;
     ros::Rate rate1(10);
     int count = 0;
-    while(nh.ok() && bGotPot == false)
+    while(nh.ok() && bReceivedMessage == false)
     {
-        listener.update(robot_pos,robot_orient);
-
-        std::cout<< "robot_pos: " << robot_pos.getX() << std::endl;
-
-        if(robot_pos.getX() > 0.0001)
-        {
-                bGotPot = true;
-        }
+        bReceivedMessage = listener.update(robot_pos,robot_orient);
 
         ros::spinOnce();
         rate1.sleep();

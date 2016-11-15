@@ -1,5 +1,7 @@
 #include <pluginlib/class_list_macros.h>
 #include "sweep_planner/sweep_planner.h"
+#include <optitrack_rviz/debug.h>
+#include <geometry_msgs/Pose2D.h>
 
 PLUGINLIB_EXPORT_CLASS(global_planner::Sweep, nav_core::BaseGlobalPlanner);
 
@@ -14,9 +16,20 @@ costmap_ros_(NULL), initialized_(false)
 }
 
 
+void Sweep::goal_callback(const geometry_msgs::Pose2D::ConstPtr& msg)
+{
+
+    x_pos_goal = msg->x;
+    y_pos_goal = msg->y;
+    bReceivedGoal = true;
+   ROS_INFO("I heard: goal");
+}
+
 void Sweep::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
 {
     if(!initialized_){
+
+        bReceivedGoal = false;
 
 
         costmap_ros_    = costmap_ros;
@@ -26,6 +39,9 @@ void Sweep::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
         private_nh.param("step_size", step_size_, costmap_->getResolution());
         private_nh.param("min_dist_from_robot", min_dist_from_robot_, 0.10);
         world_model_    = new base_local_planner::CostmapModel(*costmap_);
+
+
+        sub = nh.subscribe("goal_sweeper",2,&Sweep::goal_callback,this);
 
 
       /*  costMap2Top_sptr.reset( new c2t::CostMap2Topology(*costmap_));*/
@@ -59,7 +75,7 @@ double Sweep::footprintCost(double x_i, double y_i, double theta_i){
      return footprint_cost;
 }
 
-bool Sweep::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal, std::vector<geometry_msgs::PoseStamped>& plan){
+bool Sweep::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal_, std::vector<geometry_msgs::PoseStamped>& plan){
 
      if(!initialized_){
        ROS_ERROR("The planner has not been initialized, please call initialize() to use the planner");
@@ -69,8 +85,20 @@ bool Sweep::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msg
    /* vis_grid_ptr->publish();
      ros::spinOnce();*/
 
+     geometry_msgs::PoseStamped goal = goal_;
 
-     ROS_DEBUG("Got a start: %.2f, %.2f, and a goal: %.2f, %.2f", start.pose.position.x, start.pose.position.y, goal.pose.position.x, goal.pose.position.y);
+     ROS_INFO("             IN SWEEP GLOBAL PLANNER                 ");
+     if(bReceivedGoal)
+     {
+         goal.pose.position.x = x_pos_goal;
+         goal.pose.position.y = y_pos_goal;
+
+     }
+
+
+     opti_rviz::debug::tf_debuf(tf::Vector3( goal.pose.position.x, goal.pose.position.y,0),"PLANNER TARGET","/map");
+
+     ROS_INFO("Got a start: %.2f, %.2f, and a goal: %.2f, %.2f", start.pose.position.x, start.pose.position.y, goal.pose.position.x, goal.pose.position.y);
 
      plan.clear();
      costmap_ = costmap_ros_->getCostmap();
